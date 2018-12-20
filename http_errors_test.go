@@ -53,7 +53,7 @@ func TestToJSON(t *testing.T) {
 		"a": 1,
 		"b": "2",
 	}
-	str := fmt.Sprintf(`{"statusCode":500,"code":"code-001","category":"cat","message":"my error","exception":true,"file":"%s","line":76,"extra":{"a":1,"b":"2"}}`, he.File)
+	str := fmt.Sprintf(`{"statusCode":500,"code":"code-001","category":"cat","message":"my error","exception":true,"file":"%s","line":%d,"extra":{"a":1,"b":"2"}}`, he.File, he.Line)
 	if string(he.ToJSON()) != str {
 		t.Fatalf("to json fail")
 	}

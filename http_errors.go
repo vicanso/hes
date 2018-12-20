@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
 	"runtime"
 )
 
@@ -64,14 +65,16 @@ func (e *HTTPError) ToJSON() []byte {
 // New create a http error
 func New(message string) *HTTPError {
 	return &HTTPError{
-		Message: message,
+		Message:    message,
+		StatusCode: http.StatusInternalServerError,
 	}
 }
 
 // NewWithCaller create a http error with caller
 func NewWithCaller(message string) *HTTPError {
 	he := &HTTPError{
-		Message: message,
+		Message:    message,
+		StatusCode: http.StatusInternalServerError,
 	}
 	he.SetCaller(1)
 	return he
