@@ -1,4 +1,7 @@
-# errors 
+# errors
+
+[![Build Status](https://img.shields.io/travis/vicanso/errors.svg?label=linux+build)](https://travis-ci.org/vicanso/errors)
+
 
 Create a http error
 
