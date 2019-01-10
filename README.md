@@ -1,6 +1,6 @@
 # hes 
 
-[![Build Status](https://img.shields.io/travis/vicanso/httperrors.svg?label=linux+build)](https://travis-ci.org/vicanso/httperrors)
+[![Build Status](https://img.shields.io/travis/vicanso/hes.svg?label=linux+build)](https://travis-ci.org/vicanso/hes)
 
 
 Create a http error
