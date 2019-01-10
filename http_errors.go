@@ -66,7 +66,7 @@ func (e *Error) ToJSON() []byte {
 func New(message string) *Error {
 	return &Error{
 		Message:    message,
-		StatusCode: http.StatusInternalServerError,
+		StatusCode: http.StatusBadRequest,
 	}
 }
 
@@ -74,7 +74,7 @@ func New(message string) *Error {
 func NewWithCaller(message string) *Error {
 	he := &Error{
 		Message:    message,
-		StatusCode: http.StatusInternalServerError,
+		StatusCode: http.StatusBadRequest,
 	}
 	he.SetCaller(1)
 	return he
