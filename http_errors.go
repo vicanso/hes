@@ -1,4 +1,4 @@
-package errors
+package hes
 
 import (
 	"encoding/json"
@@ -9,8 +9,8 @@ import (
 )
 
 type (
-	// HTTPError http error
-	HTTPError struct {
+	// Error http error
+	Error struct {
 		StatusCode int    `json:"statusCode,omitempty"`
 		Code       string `json:"code,omitempty"`
 		Category   string `json:"category,omitempty"`
@@ -24,7 +24,7 @@ type (
 )
 
 // Error error interface
-func (e *HTTPError) Error() string {
+func (e *Error) Error() string {
 	str := fmt.Sprintf("message=%s", e.Message)
 
 	if e.Code != "" {
@@ -38,7 +38,7 @@ func (e *HTTPError) Error() string {
 }
 
 // Format error format
-func (e *HTTPError) Format(s fmt.State, verb rune) {
+func (e *Error) Format(s fmt.State, verb rune) {
 	switch verb {
 	default:
 		fallthrough
@@ -50,29 +50,29 @@ func (e *HTTPError) Format(s fmt.State, verb rune) {
 }
 
 // SetCaller set info of caller
-func (e *HTTPError) SetCaller(skip int) {
+func (e *Error) SetCaller(skip int) {
 	_, file, line, _ := runtime.Caller(skip)
 	e.File = file
 	e.Line = line
 }
 
 // ToJSON error to json
-func (e *HTTPError) ToJSON() []byte {
+func (e *Error) ToJSON() []byte {
 	buf, _ := json.Marshal(e)
 	return buf
 }
 
 // New create a http error
-func New(message string) *HTTPError {
-	return &HTTPError{
+func New(message string) *Error {
+	return &Error{
 		Message:    message,
 		StatusCode: http.StatusInternalServerError,
 	}
 }
 
 // NewWithCaller create a http error with caller
-func NewWithCaller(message string) *HTTPError {
-	he := &HTTPError{
+func NewWithCaller(message string) *Error {
+	he := &Error{
 		Message:    message,
 		StatusCode: http.StatusInternalServerError,
 	}

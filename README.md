@@ -1,6 +1,6 @@
-# errors
+# hes 
 
-[![Build Status](https://img.shields.io/travis/vicanso/errors.svg?label=linux+build)](https://travis-ci.org/vicanso/errors)
+[![Build Status](https://img.shields.io/travis/vicanso/httperrors.svg?label=linux+build)](https://travis-ci.org/vicanso/httperrors)
 
 
 Create a http error
@@ -10,7 +10,7 @@ Create a http error
 ## HTTP Error
 
 ```go
-he := &HTTPError{
+he := &Error{
   StatusCode: 500,
   Code: "cus-validate-fail",
   Category: "comon",
@@ -35,7 +35,7 @@ he := NewWithCaller("error message")
 Get the description of http error
 
 ```go
-he := &HTTPError{
+he := &Error{
   Message: "error message",
   Code: "cus-validate-fail",
   Category: "common",
@@ -49,7 +49,7 @@ fmt.Println(he.Error())
 Error format
 
 ```go
-he := &HTTPError{
+he := &Error{
   Message: "error message",
   Code: "cus-validate-fail",
   Category: "common",
@@ -61,7 +61,7 @@ he := &HTTPError{
 Set the caller of error
 
 ```go
-he := &HTTPError{
+he := &Error{
   Message: "error message",
   Code: "cus-validate-fail",
   Category: "common",
@@ -74,7 +74,7 @@ he.SetCaller(1)
 Error to json
 
 ```go
-he := &HTTPError{
+he := &Error{
   Message: "error message",
   Code: "cus-validate-fail",
   Category: "common",

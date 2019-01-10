@@ -1,4 +1,4 @@
-package errors
+package hes
 
 import (
 	"fmt"
@@ -60,7 +60,7 @@ func TestToJSON(t *testing.T) {
 }
 
 func TestABC(t *testing.T) {
-	he := &HTTPError{
+	he := &Error{
 		Message:  "error message",
 		Code:     "cus-validate-fail",
 		Category: "common",
