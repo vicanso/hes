@@ -10,11 +10,13 @@ Create a http error
 ## HTTP Error
 
 ```go
+err := errors.New("abcd")
 he := &Error{
   StatusCode: 500,
   Code: "cus-validate-fail",
   Category: "comon",
-  Message: "error message",
+  Message: err.Error(),
+  Err: err,
   Exception: true,
   Extra: map[string]interface{}{
     "url": "http:///127.0.0.1/users/me",

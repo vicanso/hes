@@ -8,18 +8,22 @@ import (
 	"runtime"
 )
 
+const (
+	defaultStatusCode = http.StatusBadRequest
+)
+
 type (
 	// Error http error
 	Error struct {
-		StatusCode int    `json:"statusCode,omitempty"`
-		Code       string `json:"code,omitempty"`
-		Category   string `json:"category,omitempty"`
-		Message    string `json:"message,omitempty"`
-		Exception  bool   `json:"exception,omitempty"`
-
-		File  string                 `json:"file,omitempty"`
-		Line  int                    `json:"line,omitempty"`
-		Extra map[string]interface{} `json:"extra,omitempty"`
+		StatusCode int                    `json:"statusCode,omitempty"`
+		Code       string                 `json:"code,omitempty"`
+		Category   string                 `json:"category,omitempty"`
+		Message    string                 `json:"message,omitempty"`
+		Exception  bool                   `json:"exception,omitempty"`
+		Err        error                  `json:"-"`
+		File       string                 `json:"file,omitempty"`
+		Line       int                    `json:"line,omitempty"`
+		Extra      map[string]interface{} `json:"extra,omitempty"`
 	}
 )
 
@@ -64,9 +68,28 @@ func (e *Error) ToJSON() []byte {
 
 // New create a http error
 func New(message string) *Error {
+	return NewWithStatusCode(message, defaultStatusCode)
+}
+
+// NewWithStatusCode create a http error with status code
+func NewWithStatusCode(message string, statusCode int) *Error {
 	return &Error{
 		Message:    message,
-		StatusCode: http.StatusBadRequest,
+		StatusCode: statusCode,
+	}
+}
+
+// NewWithError create a http error with error
+func NewWithError(err error) *Error {
+	return NewWithErrorStatusCode(err, defaultStatusCode)
+}
+
+// NewWithErrorStatusCode create a http error with error and status code
+func NewWithErrorStatusCode(err error, statusCode int) *Error {
+	return &Error{
+		Message:    err.Error(),
+		StatusCode: statusCode,
+		Err:        err,
 	}
 }
 

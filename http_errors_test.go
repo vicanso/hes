@@ -1,6 +1,7 @@
 package hes
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 )
@@ -31,6 +32,25 @@ func TestNewHTTPError(t *testing.T) {
 		if he.File == "" ||
 			he.Line == 0 {
 			t.Fatalf("set caller fail")
+		}
+	})
+
+	t.Run("new with status code", func(t *testing.T) {
+		message := "abc"
+		he := NewWithStatusCode(message, 403)
+		if he.Message != message ||
+			he.StatusCode != 403 {
+			t.Fatalf("new with status code fail")
+		}
+	})
+
+	t.Run("new with error", func(t *testing.T) {
+		err := errors.New("abcd")
+		he := NewWithError(err)
+		if he.StatusCode != defaultStatusCode ||
+			he.Err != err ||
+			he.Message != err.Error() {
+			t.Fatalf("new with error fail")
 		}
 	})
 }
