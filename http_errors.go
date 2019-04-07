@@ -102,3 +102,12 @@ func NewWithCaller(message string) *Error {
 	he.SetCaller(1)
 	return he
 }
+
+// Wrap wrap error
+func Wrap(err error) *Error {
+	he, ok := err.(*Error)
+	if ok {
+		return he
+	}
+	return NewWithError(err)
+}

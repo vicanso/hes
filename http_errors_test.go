@@ -89,3 +89,18 @@ func TestABC(t *testing.T) {
 		t.Fatalf("format fail")
 	}
 }
+
+func TestWrap(t *testing.T) {
+	he := &Error{
+		Message: "error message",
+	}
+	if Wrap(he) != he {
+		t.Fatalf("wrap http error fail")
+	}
+
+	err := errors.New("abcd")
+	he = Wrap(err)
+	if he.Err != err || he.Message != err.Error() {
+		t.Fatalf("wrap original error fail")
+	}
+}
