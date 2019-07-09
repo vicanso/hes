@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewHTTPError(t *testing.T) {
@@ -12,58 +14,51 @@ func TestNewHTTPError(t *testing.T) {
 	he.Code = "1-101"
 	he.StatusCode = 400
 	t.Run("error", func(t *testing.T) {
-		if he.Error() != "category=custom, code=1-101, message=my error" {
-			t.Fatalf("get error message fail")
-		}
+		assert := assert.New(t)
+		assert.Equal("category=custom, code=1-101, message=my error", he.Error(), "get error message fail")
 	})
 
 	t.Run("format", func(t *testing.T) {
+		assert := assert.New(t)
 		he := New("my error")
-		if fmt.Sprintf("%s", he) != "message=my error" {
-			t.Fatalf("format s fail")
-		}
-		if fmt.Sprintf("%q", he) != `"my error"` {
-			t.Fatalf("format q fail")
-		}
+		assert.Equal("message=my error", fmt.Sprintf("%s", he))
+		assert.Equal(`"my error"`, fmt.Sprintf("%q", he))
 	})
 
 	t.Run("set caller", func(t *testing.T) {
+		assert := assert.New(t)
 		he.SetCaller(1)
-		if he.File == "" ||
-			he.Line == 0 {
-			t.Fatalf("set caller fail")
-		}
+		assert.NotEmpty(he.File)
+		assert.NotEqual(0, he.Line)
 	})
 
 	t.Run("new with status code", func(t *testing.T) {
+		assert := assert.New(t)
 		message := "abc"
 		he := NewWithStatusCode(message, 403)
-		if he.Message != message ||
-			he.StatusCode != 403 {
-			t.Fatalf("new with status code fail")
-		}
+		assert.Equal(message, he.Message)
+		assert.Equal(403, he.StatusCode)
 	})
 
 	t.Run("new with error", func(t *testing.T) {
+		assert := assert.New(t)
 		err := errors.New("abcd")
 		he := NewWithError(err)
-		if he.StatusCode != defaultStatusCode ||
-			he.Err != err ||
-			he.Message != err.Error() {
-			t.Fatalf("new with error fail")
-		}
+		assert.Equal(defaultStatusCode, he.StatusCode)
+		assert.Equal(err, he.Err)
+		assert.Equal(err.Error(), he.Message)
 	})
 }
 
 func TestNewWithCaller(t *testing.T) {
+	assert := assert.New(t)
 	he := NewWithCaller("my error")
-	if he.File == "" ||
-		he.Line == 0 {
-		t.Fatalf("new with caller fail")
-	}
+	assert.NotEmpty(he.File)
+	assert.NotEqual(0, he.Line)
 }
 
 func TestToJSON(t *testing.T) {
+	assert := assert.New(t)
 	he := NewWithCaller("my error")
 	he.Category = "cat"
 	he.Code = "code-001"
@@ -73,34 +68,30 @@ func TestToJSON(t *testing.T) {
 		"a": 1,
 		"b": "2",
 	}
-	str := fmt.Sprintf(`{"statusCode":500,"code":"code-001","category":"cat","message":"my error","exception":true,"file":"%s","line":%d,"extra":{"a":1,"b":"2"}}`, he.File, he.Line)
-	if string(he.ToJSON()) != str {
-		t.Fatalf("to json fail")
-	}
+	str := fmt.Sprintf(`{"id":"%s","statusCode":500,"code":"code-001","category":"cat","message":"my error","exception":true,"file":"%s","line":%d,"extra":{"a":1,"b":"2"}}`, he.ID, he.File, he.Line)
+	assert.Equal(str, string(he.ToJSON()))
 }
 
 func TestABC(t *testing.T) {
+	assert := assert.New(t)
 	he := &Error{
 		Message:  "error message",
 		Code:     "cus-validate-fail",
 		Category: "common",
 	}
-	if fmt.Sprintf("%s", he) != "category=common, code=cus-validate-fail, message=error message" {
-		t.Fatalf("format fail")
-	}
+	assert.Equal("category=common, code=cus-validate-fail, message=error message", fmt.Sprintf("%s", he))
 }
 
 func TestWrap(t *testing.T) {
+	assert := assert.New(t)
 	he := &Error{
 		Message: "error message",
 	}
-	if Wrap(he) != he {
-		t.Fatalf("wrap http error fail")
-	}
+	assert.Equal(he, Wrap(he))
 
 	err := errors.New("abcd")
 	he = Wrap(err)
-	if he.Err != err || he.Message != err.Error() {
-		t.Fatalf("wrap original error fail")
-	}
+
+	assert.Equal(err, he.Err)
+	assert.Equal(err.Error(), he.Message)
 }
