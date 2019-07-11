@@ -64,6 +64,7 @@ func TestToJSON(t *testing.T) {
 	he.Code = "code-001"
 	he.StatusCode = 500
 	he.Exception = true
+	he.Err = errors.New("abcd")
 	he.Extra = map[string]interface{}{
 		"a": 1,
 		"b": "2",

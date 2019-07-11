@@ -23,7 +23,7 @@ type (
 		Category   string                 `json:"category,omitempty"`
 		Message    string                 `json:"message,omitempty"`
 		Exception  bool                   `json:"exception,omitempty"`
-		Err        error                  `json:"-,omitempty"`
+		Err        error                  `json:"-"`
 		File       string                 `json:"file,omitempty"`
 		Line       int                    `json:"line,omitempty"`
 		Extra      map[string]interface{} `json:"extra,omitempty"`
