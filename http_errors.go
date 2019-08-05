@@ -136,6 +136,12 @@ func NewWithCaller(message string) *Error {
 	return he
 }
 
+// IsError check the error whether or not hes error
+func IsError(err error) bool {
+	_, ok := err.(*Error)
+	return ok
+}
+
 // Wrap wrap error
 func Wrap(err error) *Error {
 	he, ok := err.(*Error)

@@ -48,6 +48,12 @@ func TestNewHTTPError(t *testing.T) {
 		assert.Equal(err, he.Err)
 		assert.Equal(err.Error(), he.Message)
 	})
+
+	t.Run("check error", func(t *testing.T) {
+		assert := assert.New(t)
+		assert.True(IsError(he))
+		assert.False(IsError(errors.New("abcd")))
+	})
 }
 
 func TestNewWithCaller(t *testing.T) {
