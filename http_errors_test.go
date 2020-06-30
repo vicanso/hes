@@ -35,9 +35,11 @@ func TestNewHTTPError(t *testing.T) {
 	t.Run("new with status code", func(t *testing.T) {
 		assert := assert.New(t)
 		message := "abc"
-		he := NewWithStatusCode(message, 403)
+		category := "category"
+		he := NewWithStatusCode(message, 403, category)
 		assert.Equal(message, he.Message)
 		assert.Equal(403, he.StatusCode)
+		assert.Equal(category, he.Category)
 	})
 
 	t.Run("new with error", func(t *testing.T) {
@@ -77,6 +79,16 @@ func TestToJSON(t *testing.T) {
 	}
 	str := fmt.Sprintf(`{"id":"%s","statusCode":500,"code":"code-001","category":"cat","message":"my error","exception":true,"file":"%s","line":%d,"extra":{"a":1,"b":"2"}}`, he.ID, he.File, he.Line)
 	assert.Equal(str, string(he.ToJSON()))
+}
+
+func TestClone(t *testing.T) {
+	assert := assert.New(t)
+	he := NewWithErrorStatusCode(errors.New("abc"), 400)
+	heClone := he.CloneWithMessage("def")
+	assert.NotEqual(he, heClone)
+	assert.Equal(he.ID, heClone.ID)
+	assert.NotEqual(he.Message, heClone.Message)
+	assert.Equal("def", heClone.Message)
 }
 
 func TestABC(t *testing.T) {

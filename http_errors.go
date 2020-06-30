@@ -77,7 +77,7 @@ func (e *Error) Format(s fmt.State, verb rune) {
 	default:
 		fallthrough
 	case 's':
-		io.WriteString(s, e.Error())
+		_, _ = io.WriteString(s, e.Error())
 	case 'q':
 		fmt.Fprintf(s, "%q", e.Message)
 	}
@@ -96,18 +96,30 @@ func (e *Error) ToJSON() []byte {
 	return buf
 }
 
+// CloneWithMessage clone error and update message
+func (e *Error) CloneWithMessage(message string) *Error {
+	clone := *e
+	clone.Message = message
+	return &clone
+}
+
 // New create a http error
 func New(message string) *Error {
 	return NewWithStatusCode(message, defaultStatusCode)
 }
 
 // NewWithStatusCode create a http error with status code
-func NewWithStatusCode(message string, statusCode int) *Error {
-	return &Error{
+func NewWithStatusCode(message string, statusCode int, category ...string) *Error {
+
+	he := &Error{
 		ID:         RandStringBytes(idLen),
 		Message:    message,
 		StatusCode: statusCode,
 	}
+	if len(category) != 0 {
+		he.Category = category[0]
+	}
+	return he
 }
 
 // NewWithError create a http error with error
