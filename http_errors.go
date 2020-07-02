@@ -27,6 +27,7 @@ type (
 		File       string                 `json:"file,omitempty"`
 		Line       int                    `json:"line,omitempty"`
 		Extra      map[string]interface{} `json:"extra,omitempty"`
+		Errs       []*Error               `json:"errs,omitempty"`
 	}
 )
 
@@ -101,6 +102,19 @@ func (e *Error) CloneWithMessage(message string) *Error {
 	clone := *e
 	clone.Message = message
 	return &clone
+}
+
+// IsEmpty check the error list is empty
+func (e *Error) IsEmpty() bool {
+	return len(e.Errs) == 0
+}
+
+// Add add error to error list
+func (e *Error) Add(err *Error) {
+	if len(e.Errs) == 0 {
+		e.Errs = make([]*Error, 0)
+	}
+	e.Errs = append(e.Errs, err)
 }
 
 // New create a http error

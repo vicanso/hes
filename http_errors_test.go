@@ -56,6 +56,17 @@ func TestNewHTTPError(t *testing.T) {
 		assert.True(IsError(he))
 		assert.False(IsError(errors.New("abcd")))
 	})
+
+	t.Run("error list", func(t *testing.T) {
+		assert := assert.New(t)
+		he := New("message")
+		he.ID = "0"
+		he1 := New("messsage1")
+		he1.ID = "1"
+		he.Add(he1)
+		assert.False(he.IsEmpty())
+		assert.Equal(`{"id":"0","statusCode":400,"message":"message","errs":[{"id":"1","statusCode":400,"message":"messsage1"}]}`, string(he.ToJSON()))
+	})
 }
 
 func TestNewWithCaller(t *testing.T) {
