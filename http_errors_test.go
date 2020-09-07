@@ -60,12 +60,10 @@ func TestNewHTTPError(t *testing.T) {
 	t.Run("error list", func(t *testing.T) {
 		assert := assert.New(t)
 		he := New("message")
-		he.ID = "0"
 		he1 := New("messsage1")
-		he1.ID = "1"
 		he.Add(he1)
 		assert.False(he.IsEmpty())
-		assert.Equal(`{"id":"0","statusCode":400,"message":"message","errs":[{"id":"1","statusCode":400,"message":"messsage1"}]}`, string(he.ToJSON()))
+		assert.Equal(`{"statusCode":400,"message":"message","errs":[{"statusCode":400,"message":"messsage1"}]}`, string(he.ToJSON()))
 	})
 }
 
@@ -88,7 +86,7 @@ func TestToJSON(t *testing.T) {
 		"a": 1,
 		"b": "2",
 	}
-	str := fmt.Sprintf(`{"id":"%s","statusCode":500,"code":"code-001","category":"cat","message":"my error","exception":true,"file":"%s","line":%d,"extra":{"a":1,"b":"2"}}`, he.ID, he.File, he.Line)
+	str := fmt.Sprintf(`{"statusCode":500,"code":"code-001","category":"cat","message":"my error","exception":true,"file":"%s","line":%d,"extra":{"a":1,"b":"2"}}`, he.File, he.Line)
 	assert.Equal(str, string(he.ToJSON()))
 }
 
@@ -97,7 +95,6 @@ func TestClone(t *testing.T) {
 	he := NewWithErrorStatusCode(errors.New("abc"), 400)
 	heClone := he.CloneWithMessage("def")
 	assert.NotEqual(he, heClone)
-	assert.Equal(he.ID, heClone.ID)
 	assert.NotEqual(he.Message, heClone.Message)
 	assert.Equal("def", heClone.Message)
 }
