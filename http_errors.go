@@ -88,8 +88,8 @@ func (e *Error) Add(err *Error) {
 }
 
 // New create a http error
-func New(message string) *Error {
-	return NewWithStatusCode(message, defaultStatusCode)
+func New(message string, category ...string) *Error {
+	return NewWithStatusCode(message, defaultStatusCode, category...)
 }
 
 // NewWithStatusCode create a http error with status code
