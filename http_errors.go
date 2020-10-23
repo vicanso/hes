@@ -87,6 +87,13 @@ func (e *Error) Add(err *Error) {
 	e.Errs = append(e.Errs, err)
 }
 
+// Clone clone error
+func (e *Error) Clone() *Error {
+	he := new(Error)
+	*he = *e
+	return he
+}
+
 // New create a http error
 func New(message string, category ...string) *Error {
 	return NewWithStatusCode(message, defaultStatusCode, category...)
@@ -139,7 +146,7 @@ func IsError(err error) bool {
 func Wrap(err error) *Error {
 	he, ok := err.(*Error)
 	if ok {
-		return he
+		return he.Clone()
 	}
 	return NewWithError(err)
 }

@@ -97,6 +97,11 @@ func TestClone(t *testing.T) {
 	assert.NotEqual(he, heClone)
 	assert.NotEqual(he.Message, heClone.Message)
 	assert.Equal("def", heClone.Message)
+
+	heClone = he.Clone()
+	assert.Equal(he.Message, heClone.Message)
+	he.Message = he.Message + "xx"
+	assert.NotEqual(he.Message, heClone.Message)
 }
 
 func TestABC(t *testing.T) {
