@@ -9,4 +9,6 @@ go:
   - master
 
 script:
-  - make test
+  - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin latest
+  - make lint && make test && make bench
+  
