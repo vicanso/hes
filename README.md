@@ -1,6 +1,7 @@
 # hes 
 
-[![Build Status](https://img.shields.io/travis/vicanso/hes.svg?label=linux+build)](https://travis-ci.org/vicanso/hes)
+[![Build Status](https://github.com/vicanso/hes/workflows/Test/badge.svg)](https://github.com/vicanso/hes/actions)
+
 
 
 Create a http error
