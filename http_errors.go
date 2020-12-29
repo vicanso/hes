@@ -12,21 +12,30 @@ const (
 	defaultStatusCode = http.StatusBadRequest
 )
 
+var callerEnabled = false
+
 type (
 	// Error http error
 	Error struct {
-		StatusCode int                    `json:"statusCode,omitempty"`
-		Code       string                 `json:"code,omitempty"`
-		Category   string                 `json:"category,omitempty"`
-		Message    string                 `json:"message,omitempty"`
-		Exception  bool                   `json:"exception,omitempty"`
-		Err        error                  `json:"-"`
-		File       string                 `json:"file,omitempty"`
-		Line       int                    `json:"line,omitempty"`
-		Extra      map[string]interface{} `json:"extra,omitempty"`
-		Errs       []*Error               `json:"errs,omitempty"`
+		StatusCode int    `json:"statusCode,omitempty"`
+		Code       string `json:"code,omitempty"`
+		Category   string `json:"category,omitempty"`
+		Message    string `json:"message,omitempty"`
+		Exception  bool   `json:"exception,omitempty"`
+		Err        error  `json:"-"`
+		// File caller file
+		File string `json:"file,omitempty"`
+		// Line caller line
+		Line  int                    `json:"line,omitempty"`
+		Extra map[string]interface{} `json:"extra,omitempty"`
+		Errs  []*Error               `json:"errs,omitempty"`
 	}
 )
+
+// EnableCaller enable caller
+func EnableCaller(enabled bool) {
+	callerEnabled = enabled
+}
 
 // Error error interface
 func (e *Error) Error() string {
@@ -39,6 +48,11 @@ func (e *Error) Error() string {
 	if e.Category != "" {
 		str = fmt.Sprintf("category=%s, %s", e.Category, str)
 	}
+
+	if e.File != "" {
+		str = fmt.Sprintf("file=%s, line:%d %s", e.File, e.Line, str)
+	}
+
 	return str
 }
 
@@ -69,9 +83,9 @@ func (e *Error) ToJSON() []byte {
 
 // CloneWithMessage clone error and update message
 func (e *Error) CloneWithMessage(message string) *Error {
-	clone := *e
+	clone := e.Clone()
 	clone.Message = message
-	return &clone
+	return clone
 }
 
 // IsEmpty check the error list is empty
@@ -94,14 +108,7 @@ func (e *Error) Clone() *Error {
 	return he
 }
 
-// New create a http error
-func New(message string, category ...string) *Error {
-	return NewWithStatusCode(message, defaultStatusCode, category...)
-}
-
-// NewWithStatusCode create a http error with status code
-func NewWithStatusCode(message string, statusCode int, category ...string) *Error {
-
+func newError(message string, statusCode, skip int, category ...string) *Error {
 	he := &Error{
 		Message:    message,
 		StatusCode: statusCode,
@@ -109,30 +116,45 @@ func NewWithStatusCode(message string, statusCode int, category ...string) *Erro
 	if len(category) != 0 {
 		he.Category = category[0]
 	}
+	if callerEnabled {
+		he.SetCaller(skip)
+	}
+	return he
+}
+
+// New create a http error
+func New(message string, category ...string) *Error {
+	he := newError(message, defaultStatusCode, 3, category...)
+	return he
+}
+
+// NewWithStatusCode create a http error with status code
+func NewWithStatusCode(message string, statusCode int, category ...string) *Error {
+	he := newError(message, statusCode, 3, category...)
 	return he
 }
 
 // NewWithError create a http error with error
 func NewWithError(err error) *Error {
-	return NewWithErrorStatusCode(err, defaultStatusCode)
+	he := newError(err.Error(), defaultStatusCode, 3)
+	he.Err = err
+	return he
 }
 
 // NewWithErrorStatusCode create a http error with error and status code
 func NewWithErrorStatusCode(err error, statusCode int) *Error {
-	return &Error{
-		Message:    err.Error(),
-		StatusCode: statusCode,
-		Err:        err,
-	}
+	he := newError(err.Error(), statusCode, 3)
+	he.Err = err
+	return he
 }
 
 // NewWithCaller create a http error with caller
 func NewWithCaller(message string) *Error {
 	he := &Error{
 		Message:    message,
-		StatusCode: http.StatusBadRequest,
+		StatusCode: defaultStatusCode,
 	}
-	he.SetCaller(1)
+	he.SetCaller(2)
 	return he
 }
 
@@ -148,5 +170,7 @@ func Wrap(err error) *Error {
 	if ok {
 		return he.Clone()
 	}
-	return NewWithError(err)
+	he = newError(err.Error(), defaultStatusCode, 3)
+	he.Err = err
+	return he
 }

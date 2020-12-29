@@ -83,3 +83,12 @@ he := &Error{
 }
 he.ToJSON()
 ```
+
+## EnableCaller
+
+Enable or disable to get caller by default
+
+```go
+EnableCaller(true);
+EnableCaller(false);
+```

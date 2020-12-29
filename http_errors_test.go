@@ -3,6 +3,7 @@ package hes
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -72,6 +73,17 @@ func TestNewWithCaller(t *testing.T) {
 	he := NewWithCaller("my error")
 	assert.NotEmpty(he.File)
 	assert.NotEqual(0, he.Line)
+}
+
+func TestEnableCaller(t *testing.T) {
+	assert := assert.New(t)
+	EnableCaller(true)
+	defer EnableCaller(false)
+
+	he := New("test")
+	assert.NotEmpty(he.File)
+	assert.True(strings.Contains(he.File, "http_errors_test.go"))
+	assert.NotEmpty(he.Line)
 }
 
 func TestToJSON(t *testing.T) {
