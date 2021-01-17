@@ -78,10 +78,14 @@ func TestNewWithCaller(t *testing.T) {
 func TestEnableCaller(t *testing.T) {
 	assert := assert.New(t)
 	EnableCaller(true)
+	SetFileConvertor(func(file string) string {
+		return strings.Replace(file, "hes", "", -1)
+	})
 	defer EnableCaller(false)
 
 	he := New("test")
 	assert.NotEmpty(he.File)
+	assert.False(strings.Contains(he.File, "hes"))
 	assert.True(strings.Contains(he.File, "http_errors_test.go"))
 	assert.NotEmpty(he.Line)
 }

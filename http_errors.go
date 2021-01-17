@@ -30,11 +30,20 @@ type (
 		Extra map[string]interface{} `json:"extra,omitempty"`
 		Errs  []*Error               `json:"errs,omitempty"`
 	}
+	FileConvertor func(file string) string
 )
 
 // EnableCaller enable caller
 func EnableCaller(enabled bool) {
 	callerEnabled = enabled
+}
+
+// fileConvertor file convertor
+var fileConvertor FileConvertor
+
+// SetFileConvertor set file convertor
+func SetFileConvertor(fn FileConvertor) {
+	fileConvertor = fn
 }
 
 // Error error interface
@@ -71,6 +80,9 @@ func (e *Error) Format(s fmt.State, verb rune) {
 // SetCaller set info of caller
 func (e *Error) SetCaller(skip int) {
 	_, file, line, _ := runtime.Caller(skip)
+	if fileConvertor != nil {
+		file = fileConvertor(file)
+	}
 	e.File = file
 	e.Line = line
 }
