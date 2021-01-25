@@ -59,7 +59,7 @@ func (e *Error) Error() string {
 	}
 
 	if e.File != "" {
-		str = fmt.Sprintf("file=%s, line:%d %s", e.File, e.Line, str)
+		str = fmt.Sprintf("file=%s, line=%d %s", e.File, e.Line, str)
 	}
 
 	return str
