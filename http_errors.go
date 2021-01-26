@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"runtime"
+	"strings"
 )
 
 const (
@@ -64,6 +65,13 @@ func (e *Error) Error() string {
 
 	if e.File != "" {
 		str = fmt.Sprintf("file=%s, line=%d %s", e.File, e.Line, str)
+	}
+	if len(e.Errs) != 0 {
+		arr := make([]string, len(e.Errs))
+		for index, err := range e.Errs {
+			arr[index] = err.Error()
+		}
+		str = fmt.Sprintf("%s, errs:(%s)", str, strings.Join(arr, ","))
 	}
 
 	return str
