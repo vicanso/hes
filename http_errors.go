@@ -106,11 +106,14 @@ func (e *Error) IsEmpty() bool {
 }
 
 // Add add error to error list
-func (e *Error) Add(err *Error) {
+func (e *Error) Add(errs ...*Error) {
+	if len(errs) == 0 {
+		return
+	}
 	if len(e.Errs) == 0 {
 		e.Errs = make([]*Error, 0)
 	}
-	e.Errs = append(e.Errs, err)
+	e.Errs = append(e.Errs, errs...)
 }
 
 // Clone clone error
