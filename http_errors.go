@@ -58,6 +58,10 @@ func (e *Error) Error() string {
 		str = fmt.Sprintf("category=%s, %s", e.Category, str)
 	}
 
+	if e.StatusCode != 0 {
+		str = fmt.Sprintf("statusCode=%d, %s", e.StatusCode, str)
+	}
+
 	if e.File != "" {
 		str = fmt.Sprintf("file=%s, line=%d %s", e.File, e.Line, str)
 	}

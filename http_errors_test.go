@@ -16,13 +16,13 @@ func TestNewHTTPError(t *testing.T) {
 	he.StatusCode = 400
 	t.Run("error", func(t *testing.T) {
 		assert := assert.New(t)
-		assert.Equal("category=custom, code=1-101, message=my error", he.Error(), "get error message fail")
+		assert.Equal("statusCode=400, category=custom, code=1-101, message=my error", he.Error(), "get error message fail")
 	})
 
 	t.Run("format", func(t *testing.T) {
 		assert := assert.New(t)
 		he := New("my error")
-		assert.Equal("message=my error", fmt.Sprintf("%s", he))
+		assert.Equal("statusCode=400, message=my error", fmt.Sprintf("%s", he))
 		assert.Equal(`"my error"`, fmt.Sprintf("%q", he))
 	})
 
