@@ -110,14 +110,16 @@ func (e *Error) IsEmpty() bool {
 }
 
 // Add add error to error list
-func (e *Error) Add(errs ...*Error) {
+func (e *Error) Add(errs ...error) {
 	if len(errs) == 0 {
 		return
 	}
 	if len(e.Errs) == 0 {
 		e.Errs = make([]*Error, 0)
 	}
-	e.Errs = append(e.Errs, errs...)
+	for _, err := range errs {
+		e.Errs = append(e.Errs, Wrap(err))
+	}
 }
 
 // Clone clone error
