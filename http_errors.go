@@ -117,6 +117,11 @@ func (e *Error) IsEmpty() bool {
 	return len(e.Errs) == 0
 }
 
+// IsNotEmpty check the error list is not empty
+func (e *Error) IsNotEmpty() bool {
+	return !e.IsEmpty()
+}
+
 // Add add error to error list
 func (e *Error) Add(errs ...error) {
 	if len(errs) == 0 {
