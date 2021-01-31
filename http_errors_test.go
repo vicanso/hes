@@ -67,6 +67,10 @@ func TestNewHTTPError(t *testing.T) {
 		assert.True(he.IsNotEmpty())
 		assert.Equal(`{"statusCode":400,"message":"message","errs":[{"statusCode":400,"message":"messsage1"}]}`, string(he.ToJSON()))
 		assert.Equal("statusCode=400, message=message, errs:(statusCode=400, message=messsage1)", he.Error())
+
+		he2 := New("message2")
+		he2.Add(he)
+		assert.Equal("statusCode=400, message=message2, errs:(statusCode=400, message=messsage1)", he2.Error())
 	})
 }
 
