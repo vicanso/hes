@@ -21,6 +21,7 @@ type (
 		StatusCode int    `json:"statusCode,omitempty"`
 		Code       string `json:"code,omitempty"`
 		Category   string `json:"category,omitempty"`
+		Title      string `json:"title,omitempty"`
 		Message    string `json:"message,omitempty"`
 		Exception  bool   `json:"exception,omitempty"`
 		Err        error  `json:"-"`
