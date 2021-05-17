@@ -202,6 +202,13 @@ func NewWithCaller(message string) *Error {
 	return he
 }
 
+// NewWithExcpetion create a http error and set exception to true
+func NewWithExcpetion(message string) *Error {
+	he := newError(message, defaultStatusCode, 3)
+	he.Exception = true
+	return he
+}
+
 // IsError check the error whether or not hes error
 func IsError(err error) bool {
 	_, ok := err.(*Error)

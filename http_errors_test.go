@@ -81,6 +81,12 @@ func TestNewWithCaller(t *testing.T) {
 	assert.NotEqual(0, he.Line)
 }
 
+func TestNewWithExcpetion(t *testing.T) {
+	assert := assert.New(t)
+	he := NewWithExcpetion("abc")
+	assert.True(he.Exception)
+}
+
 func TestEnableCaller(t *testing.T) {
 	assert := assert.New(t)
 	EnableCaller(true)
