@@ -132,6 +132,9 @@ func (e *Error) Add(errs ...error) {
 		e.Errs = make([]*Error, 0)
 	}
 	for _, err := range errs {
+		if err == nil {
+			continue
+		}
 		he := Wrap(err)
 		// 如果包括子错误，则直接添加子错误列表
 		if he.IsNotEmpty() {

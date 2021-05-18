@@ -62,7 +62,7 @@ func TestNewHTTPError(t *testing.T) {
 		assert := assert.New(t)
 		he := New("message")
 		he1 := New("messsage1")
-		he.Add(he1)
+		he.Add(he1, nil)
 		assert.False(he.IsEmpty())
 		assert.True(he.IsNotEmpty())
 		assert.Equal(`{"statusCode":400,"message":"message","errs":[{"statusCode":400,"message":"messsage1"}]}`, string(he.ToJSON()))
