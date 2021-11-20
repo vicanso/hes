@@ -123,6 +123,14 @@ func (e *Error) IsNotEmpty() bool {
 	return !e.IsEmpty()
 }
 
+// AddExtra add extra value to error
+func (e *Error) AddExtra(key string, value interface{}) {
+	if e.Extra == nil {
+		e.Extra = make(map[string]interface{})
+	}
+	e.Extra[key] = value
+}
+
 // Add add error to error list
 func (e *Error) Add(errs ...error) {
 	if len(errs) == 0 {

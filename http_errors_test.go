@@ -72,6 +72,14 @@ func TestNewHTTPError(t *testing.T) {
 		he2.Add(he)
 		assert.Equal("statusCode=400, message=message2, errs:(statusCode=400, message=messsage1)", he2.Error())
 	})
+
+	t.Run("add extra", func(t *testing.T) {
+		assert := assert.New(t)
+
+		he := New("message")
+		he.AddExtra("title", "test")
+		assert.Equal("test", he.Extra["title"])
+	})
 }
 
 func TestNewWithCaller(t *testing.T) {
