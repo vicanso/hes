@@ -82,6 +82,19 @@ func TestNewHTTPError(t *testing.T) {
 	})
 }
 
+func TestMutexError(t *testing.T) {
+	assert := assert.New(t)
+	he := NewMutex("my error")
+	he.SetCaller(1)
+	assert.NotEmpty(he.File)
+	assert.NotEmpty(he.Line)
+
+	he.Add(errors.New("abc"))
+
+	he1 := he.Clone()
+	assert.Equal(he.Message, he1.Message)
+}
+
 func TestNewWithCaller(t *testing.T) {
 	assert := assert.New(t)
 	he := NewWithCaller("my error")

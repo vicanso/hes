@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"runtime"
 	"strings"
+	"sync"
 )
 
 const (
@@ -18,6 +19,7 @@ var callerEnabled = false
 type (
 	// Error http error
 	Error struct {
+		lock       *sync.RWMutex
 		StatusCode int    `json:"statusCode,omitempty"`
 		Code       string `json:"code,omitempty"`
 		Category   string `json:"category,omitempty"`
@@ -92,6 +94,10 @@ func (e *Error) Format(s fmt.State, verb rune) {
 
 // SetCaller set info of caller
 func (e *Error) SetCaller(skip int) {
+	if e.lock != nil {
+		e.lock.Lock()
+		defer e.lock.Unlock()
+	}
 	_, file, line, _ := runtime.Caller(skip)
 	if fileConvertor != nil {
 		file = fileConvertor(file)
@@ -115,16 +121,25 @@ func (e *Error) CloneWithMessage(message string) *Error {
 
 // IsEmpty check the error list is empty
 func (e *Error) IsEmpty() bool {
+	if e.lock != nil {
+		e.lock.RLock()
+		defer e.lock.RUnlock()
+	}
 	return len(e.Errs) == 0
 }
 
 // IsNotEmpty check the error list is not empty
 func (e *Error) IsNotEmpty() bool {
+	// is empty有判断锁，因此不需要判断
 	return !e.IsEmpty()
 }
 
 // AddExtra add extra value to error
 func (e *Error) AddExtra(key string, value interface{}) {
+	if e.lock != nil {
+		e.lock.Lock()
+		defer e.lock.Unlock()
+	}
 	if e.Extra == nil {
 		e.Extra = make(map[string]interface{})
 	}
@@ -135,6 +150,10 @@ func (e *Error) AddExtra(key string, value interface{}) {
 func (e *Error) Add(errs ...error) {
 	if len(errs) == 0 {
 		return
+	}
+	if e.lock != nil {
+		e.lock.Lock()
+		defer e.lock.Unlock()
 	}
 	if len(e.Errs) == 0 {
 		e.Errs = make([]*Error, 0)
@@ -160,6 +179,9 @@ func (e *Error) Add(errs ...error) {
 func (e *Error) Clone() *Error {
 	he := new(Error)
 	*he = *e
+	if he.lock != nil {
+		he.lock = &sync.RWMutex{}
+	}
 	return he
 }
 
@@ -180,6 +202,13 @@ func newError(message string, statusCode, skip int, category ...string) *Error {
 // New create a http error
 func New(message string, category ...string) *Error {
 	he := newError(message, defaultStatusCode, 3, category...)
+	return he
+}
+
+// NewMutex create a http error with mutex
+func NewMutex(message string, category ...string) *Error {
+	he := New(message, category...)
+	he.lock = &sync.RWMutex{}
 	return he
 }
 
