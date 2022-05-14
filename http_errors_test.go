@@ -104,7 +104,7 @@ func TestNewWithCaller(t *testing.T) {
 
 func TestNewWithExcpetion(t *testing.T) {
 	assert := assert.New(t)
-	he := NewWithExcpetion("abc")
+	he := NewWithException("abc")
 	assert.True(he.Exception)
 }
 
