@@ -65,7 +65,7 @@ func TestNewHTTPError(t *testing.T) {
 		he.Add(he1, nil)
 		assert.False(he.IsEmpty())
 		assert.True(he.IsNotEmpty())
-		assert.Equal(`{"statusCode":400,"message":"message","errs":[{"statusCode":400,"message":"messsage1"}]}`, string(he.ToJSON()))
+		assert.Equal("{\"statusCode\":400,\"subCategory\":\"\",\"message\":\"message\",\"errs\":[{\"statusCode\":400,\"subCategory\":\"\",\"message\":\"messsage1\"}]}", string(he.ToJSON()))
 		assert.Equal("statusCode=400, message=message, errs:(statusCode=400, message=messsage1)", he.Error())
 
 		he2 := New("message2")
@@ -135,7 +135,7 @@ func TestToJSON(t *testing.T) {
 		"a": 1,
 		"b": "2",
 	}
-	str := fmt.Sprintf(`{"statusCode":500,"code":"code-001","category":"cat","message":"my error","exception":true,"file":"%s","line":%d,"extra":{"a":1,"b":"2"}}`, he.File, he.Line)
+	str := fmt.Sprintf(`{"statusCode":500,"code":"code-001","category":"cat","subCategory":"","message":"my error","exception":true,"file":"%s","line":%d,"extra":{"a":1,"b":"2"}}`, he.File, he.Line)
 	assert.Equal(str, string(he.ToJSON()))
 }
 

@@ -19,20 +19,31 @@ var callerEnabled = false
 type (
 	// Error http error
 	Error struct {
-		lock       *sync.RWMutex
-		StatusCode int    `json:"statusCode,omitempty"`
-		Code       string `json:"code,omitempty"`
-		Category   string `json:"category,omitempty"`
-		Title      string `json:"title,omitempty"`
-		Message    string `json:"message,omitempty"`
-		Exception  bool   `json:"exception,omitempty"`
-		Err        error  `json:"-"`
+		lock *sync.RWMutex
+		// http status code
+		StatusCode int `json:"statusCode,omitempty"`
+		// error code
+		Code string `json:"code,omitempty"`
+		// category
+		Category string `json:"category,omitempty"`
+		// sub category
+		SubCategory string `json:"subCategory"`
+		// title
+		Title string `json:"title,omitempty"`
+		// message
+		Message string `json:"message,omitempty"`
+		// exception error
+		Exception bool `json:"exception,omitempty"`
+		// original error
+		Err error `json:"-"`
 		// File caller file
 		File string `json:"file,omitempty"`
 		// Line caller line
-		Line  int                    `json:"line,omitempty"`
+		Line int `json:"line,omitempty"`
+		// extra info for error
 		Extra map[string]interface{} `json:"extra,omitempty"`
-		Errs  []*Error               `json:"errs,omitempty"`
+		// sub errors
+		Errs []*Error `json:"errs,omitempty"`
 	}
 	FileConvertor func(file string) string
 )
