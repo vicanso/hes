@@ -157,6 +157,18 @@ func (e *Error) AddExtra(key string, value interface{}) {
 	e.Extra[key] = value
 }
 
+// Exists return true if it already exists
+func (e *Error) exists(he *Error) bool {
+	for _, item := range e.Errs {
+		if he.Title == item.Title &&
+			he.Message == item.Message &&
+			he.Category == item.Category {
+			return true
+		}
+	}
+	return false
+}
+
 // Add add error to error list
 func (e *Error) Add(errs ...error) {
 	if len(errs) == 0 {
@@ -179,6 +191,11 @@ func (e *Error) Add(errs ...error) {
 			for _, err := range he.Errs {
 				e.Add(err)
 			}
+			continue
+		}
+		// 判断是否已存在相同的error
+		// 如果已有相同error，则不添加
+		if e.exists(he) {
 			continue
 		}
 
