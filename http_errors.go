@@ -27,7 +27,7 @@ type (
 		// category
 		Category string `json:"category,omitempty"`
 		// sub category
-		SubCategory string `json:"subCategory"`
+		SubCategory string `json:"subCategory,omitempty"`
 		// title
 		Title string `json:"title,omitempty"`
 		// message
@@ -168,16 +168,7 @@ func (e *Error) exists(he *Error) bool {
 	}
 	return false
 }
-
-// Add add error to error list
-func (e *Error) Add(errs ...error) {
-	if len(errs) == 0 {
-		return
-	}
-	if e.lock != nil {
-		e.lock.Lock()
-		defer e.lock.Unlock()
-	}
+func (e *Error) add(errs ...error) {
 	if len(e.Errs) == 0 {
 		e.Errs = make([]*Error, 0)
 	}
@@ -189,7 +180,7 @@ func (e *Error) Add(errs ...error) {
 		// 如果包括子错误，则直接添加子错误列表
 		if he.IsNotEmpty() {
 			for _, err := range he.Errs {
-				e.Add(err)
+				e.add(err)
 			}
 			continue
 		}
@@ -201,6 +192,18 @@ func (e *Error) Add(errs ...error) {
 
 		e.Errs = append(e.Errs, he)
 	}
+}
+
+// Add add error to error list
+func (e *Error) Add(errs ...error) {
+	if len(errs) == 0 {
+		return
+	}
+	if e.lock != nil {
+		e.lock.Lock()
+		defer e.lock.Unlock()
+	}
+	e.add(errs...)
 }
 
 // Clone clone error
