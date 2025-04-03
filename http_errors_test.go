@@ -112,7 +112,7 @@ func TestEnableCaller(t *testing.T) {
 	assert := assert.New(t)
 	EnableCaller(true)
 	SetFileConvertor(func(file string) string {
-		return strings.Replace(file, "hes", "", -1)
+		return strings.ReplaceAll(file, "hes", "")
 	})
 	defer EnableCaller(false)
 
