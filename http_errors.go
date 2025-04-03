@@ -99,7 +99,7 @@ func (e *Error) Format(s fmt.State, verb rune) {
 	case 's':
 		_, _ = io.WriteString(s, e.Error())
 	case 'q':
-		fmt.Fprintf(s, "%q", e.Message)
+		_, _ = fmt.Fprintf(s, "%q", e.Message)
 	}
 }
 
