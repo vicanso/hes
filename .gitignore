@@ -1,2 +1,4 @@
 vendor
 *.out
+test.out
+coverage.html
